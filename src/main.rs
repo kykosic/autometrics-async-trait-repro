@@ -1,5 +1,5 @@
 use std::net::{Ipv4Addr, SocketAddr};
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::atomic::{AtomicUsize, Ordering};
 
 use anyhow::Result;
 use autometrics::{autometrics, prometheus_exporter};
@@ -26,11 +26,10 @@ impl Greeter for MyGreeter {
         request: Request<HelloRequest>,
     ) -> Result<Response<HelloReply>, Status> {
         // every other response is an error
-        static LAST_ERR: AtomicBool = AtomicBool::new(false);
-        let last_err = LAST_ERR.load(Ordering::Acquire);
-        LAST_ERR.store(!last_err, Ordering::Release);
+        static CALL_COUNT: AtomicUsize = AtomicUsize::new(0);
+        let count = CALL_COUNT.fetch_add(1, Ordering::AcqRel);
 
-        if last_err {
+        if count % 2 == 0 {
             Err(Status::internal("error!"))
         } else {
             let reply = hello_world::HelloReply {
