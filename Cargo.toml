@@ -1,0 +1,22 @@
+[package]
+name = "autometrics-async-trait-repro"
+version = "0.1.0"
+edition = "2021"
+
+
+[dependencies]
+anyhow = "1.0.75"
+axum = "0.6.20"
+duplicate = "1.0.0"
+prometheus = "0.13.3"
+prost = "0.12.3"
+tokio = { version = "1.34.0", features = ["full"] }
+tonic = "0.10.2"
+
+[dependencies.autometrics]
+git = "https://github.com/autometrics-dev/autometrics-rs.git"
+rev = "69e64f851ed7e3668a914a62126eabdfe134ee36"
+features = ["prometheus-exporter"]
+
+[build-dependencies]
+tonic-build = "0.10.2"
